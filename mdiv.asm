@@ -67,6 +67,9 @@ mdiv:
 .negative_product:
     test r9b, r9b                 ; bo jesli r10b zmieniony tzn ze x zmieniony
     jnz .reverse_x
+    mov rax, [rdi + rsi * 8 - 8]
+    test rax, rax
+    js .handle_sigfpe
 
 .exit:
     mov rax, r11                    ; w r11 jest remainder
