@@ -35,15 +35,15 @@ mdiv:
     ;inc r10b                       ; zeby wiedziec czy reszte zmieniac na -1
 
 .reverse_x:
-    xor r11, r11
+    xor rdx, rdx
     stc
 .reverse_loop:
-    not qword [rdi + r11 * 8]
-    adc qword [rdi + r11 * 8], 0
-    inc r11
-    cmp rsi, r11
+    not qword [rdi + rdx * 8]
+    adc qword [rdi + rdx * 8], 0
+    inc rdx
+    cmp rdx, rsi
     jne .reverse_loop
-    test r10b, r10b
+    test cl, cl                     ; bo jesli rcx = 0 to loop juz byl wykonany
     jz .exit
     inc r10b
 
@@ -54,23 +54,20 @@ mdiv:
     mov [rdi + rcx * 8], rax
     test rcx, rcx                   ; moze niepotrzebne
     jnz .loop
-    ;mov r11, rdx                   ; przenosze reszte //moze niepotrzebne?
+    mov r11, rdx                   ; przenosze reszte //moze niepotrzebne?
 
 .negative_remainder:
     test r10b, r10b
     jz .negative_product
-   ;not r11
-   not rdx
-   ;inc r11
-   inc rdx
+    not r11
+    inc r11
 
 .negative_product:
-    test r10b, r10b                 ; bo jesli r10b zmieniony tzn ze x zmieniony
-    jz .reverse_x
+    test r9b, r9b                 ; bo jesli r10b zmieniony tzn ze x zmieniony
+    jnz .reverse_x
 
 .exit:
-   ;mov rax, r11                    ; w r11 jest remainder
-   mov rax, rdx
+    mov rax, r11                    ; w r11 jest remainder
     ret                             ; wynik zwracam w rax
 
 
