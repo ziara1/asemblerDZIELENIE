@@ -5,18 +5,14 @@ global mdiv
     ; rsi - n
     ; rdx - y - r8
     ; r8 przenosze y do r8
-    ; rdx to bedzie reszta z dzielenia aktualnego
+    ; rdx to bedzie reszta z dzielenia
     ; rcx jest n zeby liczyc petle
-    ; r11 to bedzie remainder
 
 mdiv:
 
-    test rdx, rdx
-    jz .handle_sigfpe           ; wykonuje skok, gdy rdx == 0ls
     mov r8, rdx
     mov rcx, rsi
     xor rdx, rdx                ; zeruje rdx, bo pozniej go uzywam w dzieleniu
-
     xor r9b, r9b
     xor r10b, r10b
 
@@ -34,20 +30,18 @@ mdiv:
     inc r9b
     inc r10b                       ; zeby wiedziec czy reszte zmieniac na -1
 
-
 .reverse_x:
-    xor rdx, rdx
+    xor r11, r11
     mov rax, 1
 .reverse_loop:
-    not qword [rdi + rdx * 8]
-    add [rdi + rdx * 8], rax
+    not qword [rdi + r11 * 8]
+    add qword [rdi + r11 * 8], rax
     setc al
-    inc rdx
-    cmp rdx, rsi
+    inc r11
+    cmp r11, rsi
     jne .reverse_loop
     test rcx, rcx                     ; bo jesli rcx = 0 to loop juz byl wykonany
     jz .exit
-    xor rdx, rdx
 
 .loop:
     dec rcx
@@ -56,13 +50,12 @@ mdiv:
     mov [rdi + rcx * 8], rax
     test rcx, rcx                   ; moze niepotrzebne
     jnz .loop
-    mov r11, rdx                   ; przenosze reszte //moze niepotrzebne?
 
 .negative_remainder:
     test r10b, r10b
     jz .negative_product
-    not r11
-    inc r11
+    not rdx
+    inc rdx
 
 .negative_product:
     test r9b, r9b                 ; bo jesli r10b zmieniony tzn ze x zmieniony
@@ -72,13 +65,9 @@ mdiv:
     js .handle_sigfpe
 
 .exit:
-    mov rax, r11                    ; w r11 jest remainder
+    mov rax, rdx                    ; w r11 jest remainder
     ret                             ; wynik zwracam w rax
 
-
 .handle_sigfpe:
-    xor al, al
-    div al
-
-;; mozna juz w reverse loop odjac czy dodaac po prostu bo wtedy x jest ujemny
+    div r9b
 
