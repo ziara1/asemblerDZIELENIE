@@ -32,20 +32,22 @@ mdiv:
     test rax, rax
     jns .loop                       ; jesli x >= 0 to skok
     inc r9b
-    ;inc r10b                       ; zeby wiedziec czy reszte zmieniac na -1
+    inc r10b                       ; zeby wiedziec czy reszte zmieniac na -1
 
 .reverse_x:
     xor rdx, rdx
-    stc
+    mov rax, 1
 .reverse_loop:
     not qword [rdi + rdx * 8]
-    adc qword [rdi + rdx * 8], 0
+    add [rdi + rdx * 8], rax
+    setc al
     inc rdx
     cmp rdx, rsi
     jne .reverse_loop
     test cl, cl                     ; bo jesli rcx = 0 to loop juz byl wykonany
     jz .exit
-    inc r10b
+    ;inc r10b
+    xor rdx, rdx
 
 .loop:
     dec rcx
@@ -76,3 +78,4 @@ mdiv:
     div al
 
 ;; mozna juz w reverse loop odjac czy dodaac po prostu bo wtedy x jest ujemny
+
