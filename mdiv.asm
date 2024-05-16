@@ -12,7 +12,7 @@ global mdiv
 mdiv:
 
     test rdx, rdx
-    jz .handle_sigfpe           ; wykonuje skok, gdy rdx == 0
+    jz .handle_sigfpe           ; wykonuje skok, gdy rdx == 0ls
     mov r8, rdx
     mov rcx, rsi
     xor rdx, rdx                ; zeruje rdx, bo pozniej go uzywam w dzieleniu
@@ -34,6 +34,7 @@ mdiv:
     inc r9b
     inc r10b                       ; zeby wiedziec czy reszte zmieniac na -1
 
+
 .reverse_x:
     xor rdx, rdx
     mov rax, 1
@@ -44,9 +45,8 @@ mdiv:
     inc rdx
     cmp rdx, rsi
     jne .reverse_loop
-    test cl, cl                     ; bo jesli rcx = 0 to loop juz byl wykonany
+    test rcx, rcx                     ; bo jesli rcx = 0 to loop juz byl wykonany
     jz .exit
-    ;inc r10b
     xor rdx, rdx
 
 .loop:
