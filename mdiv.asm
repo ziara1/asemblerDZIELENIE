@@ -19,9 +19,7 @@ mdiv:
 .check_y:
     test r8, r8
     jns .check_x                    ; jeśli y >= 0 to skaczę
-    ;not r8                          ; jeśli y < 0 to zmieniam go na -y
-    ;inc r8
-    neg r8
+    neg r8                          ; jeśli y < 0 to zmieniam go na -y
     dec r9b                         ; jeśli r9b będzie = 0 to x i y taki sam znak
 
 .check_x:
@@ -49,14 +47,11 @@ mdiv:
     mov rax, [rdi + rcx * 8]        ; dzielenie rdx:rax przez r8, w rdx reszta
     div r8
     mov [rdi + rcx * 8], rax
-    ;test rcx, rcx                   ; może niepotrzebne
     jnz .loop
 
 .negative_remainder:                ; jeśli trzeba zmienić resztę na ujemną
     test r10b, r10b
     jz .negative_product
-    ;not rdx
-    ;inc rdx
     neg rdx
 
 .negative_product:                  ; jeśli trzeba zmienić iloraz na ujemny
